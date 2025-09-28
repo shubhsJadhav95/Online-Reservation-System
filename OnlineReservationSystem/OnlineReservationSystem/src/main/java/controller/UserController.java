@@ -4,6 +4,7 @@ import com.shubhsJadhav95.OnlineReservationSystem.dto.ReservationRequestDTO;
 import com.shubhsJadhav95.OnlineReservationSystem.dto.ReservationResponseDTO;
 import com.shubhsJadhav95.OnlineReservationSystem.dto.UserDTO;
 import model.Train;
+import model.User;
 import model.UserReservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +62,26 @@ public class UserController {
     @PostMapping("/booktrain")
     public ReservationResponseDTO bookTrain(@RequestBody ReservationRequestDTO request) throws Exception {
         return reservationService.bookTrain(request);
+    }
+
+    @GetMapping("/{id}")
+    public List<UserReservation> getUserReservations(@PathVariable Long id) {
+        return reservationService.getreservationbtid(id);
+    }
+
+
+    @PutMapping("/{userId}/reservations/cancel/{reservationId}")
+    public ReservationResponseDTO cancelReservation(
+            @PathVariable Long userId,
+            @PathVariable Long reservationId) throws Exception {
+
+        // Optional: validate that the reservation belongs to this user
+        UserReservation reservation = reservationService.getreservationbtid(userId).stream()
+                .filter(r -> r.getId().equals(reservationId))
+                .findFirst()
+                .orElseThrow(() -> new Exception("Reservation not found for this user"));
+
+        return reservationService.cancelReservation(reservationId);
     }
 
 }
