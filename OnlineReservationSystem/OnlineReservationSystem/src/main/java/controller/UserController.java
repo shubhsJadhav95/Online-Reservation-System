@@ -1,12 +1,14 @@
 package controller;
 
-
-import com.shubhsJadhav95.OnlineReservationSystem.dto.TrainDTO;
+import com.shubhsJadhav95.OnlineReservationSystem.dto.ReservationRequestDTO;
+import com.shubhsJadhav95.OnlineReservationSystem.dto.ReservationResponseDTO;
 import com.shubhsJadhav95.OnlineReservationSystem.dto.UserDTO;
 import model.Train;
+import model.UserReservation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import service.ReservationService;
 import service.TrainService;
 import service.UserService;
 
@@ -22,6 +24,8 @@ public class UserController {
     @Autowired
     private TrainService trainService;
 
+    @Autowired
+    private ReservationService reservationService;
 
     // Register with RequestBody
     @PostMapping("/register")
@@ -41,15 +45,25 @@ public class UserController {
         }
     }
 
+    // Search all trains
     @GetMapping("/search")
-    public List<Train> getrains()
-    {
+    public List<Train> getTrains() {
         return trainService.getAllTrains();
     }
 
+    // Search train by ID
     @GetMapping("/search/{trainId}")
     public Train getById(@PathVariable Long trainId) {
         return trainService.getTrainById(trainId);
     }
 
+
+    @PostMapping("/booktrain")
+    public ReservationResponseDTO bookTrain(@RequestBody ReservationRequestDTO request) throws Exception {
+        return reservationService.bookTrain(request);
+    }
+
 }
+
+
+
